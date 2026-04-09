@@ -1,0 +1,8 @@
+{
+  "name": "video-skills",
+  "description": "Claude Code エージェントが動画編集タスクを自律実行するためのプラグイン。FFmpeg によるカット・結合・変換、Whisper による字幕生成、ノイズ除去、一括パイプラインを提供します。",
+  "version": "1.0.0",
+  "author": {
+    "name": "uidev1116"
+  }
+}
