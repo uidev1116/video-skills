@@ -4,5 +4,18 @@
   "version": "1.0.0",
   "author": {
     "name": "uidev1116"
-  }
+  },
+  "repository": "https://github.com/uidev1116/video-skills",
+  "license": "MIT",
+  "keywords": [
+    "video",
+    "ffmpeg",
+    "whisper",
+    "caption",
+    "subtitle",
+    "srt",
+    "noise-reduction",
+    "video-editing",
+    "transcription"
+  ]
 }

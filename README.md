@@ -13,16 +13,28 @@
 
 ## インストール
 
-### Claude Code プラグイン
+### Claude Code プラグイン（GitHub から追加）
 
 本リポジトリは [Claude Code プラグイン](https://code.claude.com/docs/plugins)としてインストールできます。スキルは `video-skills:` 名前空間で自動認識されます。
 
-```bash
-# ローカルでテスト
-claude --plugin-dir /path/to/video-skills
+```shell
+# 1. マーケットプレイスとして追加
+/plugin marketplace add uidev1116/video-skills
 
-# マーケットプレイスからインストール（公開後）
-claude plugin install video-skills
+# 2. プラグインをインストール
+/plugin install video-skills@uidev1116-video-skills
+```
+
+ローカルでのテスト：
+
+```bash
+claude --plugin-dir /path/to/video-skills
+```
+
+### Vercel's Skills CLI
+
+```bash
+npx skills add uidev1116/video-skills
 ```
 
 ### 手動インストール
