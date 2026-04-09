@@ -47,6 +47,9 @@ mkdir -p .claude/skills && cp -r skills/* .claude/skills/
 
 # Claude Code（ユーザー単位、全プロジェクトで利用可能）
 cp -r skills/* ~/.claude/skills/
+
+# Gemini CLI
+mkdir -p ~/.gemini/skills && cp -r skills/* ~/.gemini/skills/
 ```
 
 必要に応じてコンテキストファイルをプロジェクトルートにコピーしてください：
@@ -54,6 +57,7 @@ cp -r skills/* ~/.claude/skills/
 ```bash
 cp CLAUDE.md /path/to/project/   # Claude Code
 cp AGENTS.md /path/to/project/   # OpenAI Codex
+cp GEMINI.md /path/to/project/   # Gemini CLI
 ```
 
 ## 仕組み
@@ -81,6 +85,7 @@ cp AGENTS.md /path/to/project/   # OpenAI Codex
 |---|---|
 | `CLAUDE.md` | Claude Code |
 | `AGENTS.md` | OpenAI Codex |
+| `GEMINI.md` | Gemini CLI |
 
 ## リポジトリ構成
 
@@ -90,6 +95,7 @@ cp AGENTS.md /path/to/project/   # OpenAI Codex
 │   └── plugin.json              # Claude Code プラグインマニフェスト
 ├── CLAUDE.md                    # Claude Code 向けコンテキスト
 ├── AGENTS.md                    # OpenAI Codex 向けコンテキスト
+├── GEMINI.md                    # Gemini CLI 向けコンテキスト
 ├── docs/                        # 設計ドキュメント
 └── skills/
     ├── ffmpeg-edit/
