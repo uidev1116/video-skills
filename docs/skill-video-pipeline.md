@@ -25,21 +25,30 @@ ffmpeg-edit, whisper-caption, noise-clean を束ねるオーケストレータ�
 入力動画
   → Step 1: [noise-clean] ノイズ除去
   → Step 2: [ffmpeg-edit] 無音検出 → カット・結合
+  → Step 3: [ffmpeg-edit] 書き出し + プラットフォーム向けエンコード
+  → （オプション）[whisper-caption] 字幕が必要な場合
+```
+
+### Variant B: 字幕付き編集パイプライン
+
+```
+入力動画
+  → Step 1: [noise-clean] ノイズ除去
+  → Step 2: [ffmpeg-edit] 無音検出 → カット・結合
   → Step 3: [whisper-caption] 文字起こし → SRT 生成
   → Step 4: 字幕の確認・修正
   → Step 5: [ffmpeg-edit] 字幕焼き込み + 書き出し
-  → Step 6: 完成確認 + プラットフォーム向けエンコード
 ```
 
-### Variant B: Remotion アニメーション字幕付き
+### Variant C: Remotion アニメーション字幕付き
 
-Step 4-5 を差し替え：SRT → JSON 変換 → Remotion コンポジション → render
+Variant B の Step 4-5 を差し替え：SRT → JSON 変換 → Remotion コンポジション → render
 
 ## references/ の構成
 
 | ファイル | 内容 |
 |---------|------|
-| `tutorial_workflow.md` | スクリーンキャスト・チュートリアル動画に特化した Step-by-Step ワークフロー。ノイズ除去 → カット → 字幕 → 書き出しの全手順、閾値チューニング、a-blog CMS 用語対応 |
+| `tutorial_workflow.md` | スクリーンキャスト・チュートリアル動画に特化した Step-by-Step ワークフロー。ノイズ除去 → カット → 字幕 → 書き出しの全手順、閾値チューニング、a-blog cms 用語対応 |
 | `platform_presets.md` | YouTube / YouTube Shorts / Instagram Reels / X / 社内共有の各プラットフォーム向け FFmpeg エンコード設定、ファイルサイズ目安 |
 
 ## 設計上のポイント

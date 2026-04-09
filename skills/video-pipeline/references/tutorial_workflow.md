@@ -1,6 +1,6 @@
 # チュートリアル動画ワークフロー
 
-スクリーンキャスト・解説動画（a-blog CMS チュートリアルなど）に特化したワークフロー。
+スクリーンキャスト・解説動画（a-blog cms チュートリアルなど）に特化したワークフロー。
 
 ## 想定シナリオ
 
@@ -80,7 +80,30 @@ cat > keep_segments.txt << 'EOF'
 EOF
 ```
 
-## Step 3: 文字起こし・字幕生成
+## Step 3: 書き出し
+
+```bash
+ffmpeg -i clips/tutorial_cut.mp4 \
+  -vcodec libx264 -crf 23 \
+  -vf "scale=-2:1080" \
+  -acodec aac -b:a 192k \
+  -movflags +faststart \
+  output/tutorial_final.mp4
+```
+
+## Step 4: 完成確認
+
+```bash
+# ファイルサイズ・長さを確認
+ffprobe -v quiet -show_entries format=duration,size -of default=noprint_wrappers=1 output/tutorial_final.mp4
+
+# 再生確認
+open output/tutorial_final.mp4  # macOS
+```
+
+## オプション: 字幕生成
+
+字幕が必要な場合は `whisper-caption` スキルを使って SRT を生成できる。
 
 ```bash
 # カット済みファイルから音声抽出
@@ -110,22 +133,7 @@ print('出力: captions/captions.srt')
 "
 ```
 
-## Step 4: 字幕の確認・修正
-
-```bash
-# SRT の内容を確認
-cat captions/captions.srt
-
-# テキストエディタで誤認識を修正
-# （a-blog CMS 固有の用語が誤認識されやすい）
-# 例: "エントリー" → 正しく認識されるはず
-#     "モジュール" → 正しく認識されるはず
-#     "テーマ" → 正しく認識されるはず
-```
-
-## Step 5: 字幕焼き込み + 書き出し
-
-### オプション A: シンプル焼き込み（推奨・最速）
+### 字幕を動画に焼き込む場合
 
 ```bash
 ffmpeg -i clips/tutorial_cut.mp4 \
@@ -135,29 +143,22 @@ ffmpeg -i clips/tutorial_cut.mp4 \
   output/tutorial_final.mp4
 ```
 
-### オプション B: 字幕なし（YouTube に SRT を別途アップロード）
+### YouTube に SRT を別途アップロードする場合
+
+YouTube は SRT を直接アップロードできるので焼き込み不要。
 
 ```bash
-# YouTube は SRT を直接アップロードできるので焼き込みなしでもOK
-ffmpeg -i clips/tutorial_cut.mp4 \
-  -vcodec libx264 -crf 23 \
-  -vf "scale=-2:1080" \
-  -acodec aac -b:a 192k \
-  -movflags +faststart \
-  output/tutorial_final.mp4
-
-# SRT は output/ にコピーしておく
 cp captions/captions.srt output/tutorial_captions.srt
 ```
 
-## Step 6: 完成確認
+### a-blog cms 用語の認識精度を上げる
 
-```bash
-# ファイルサイズ・長さを確認
-ffprobe -v quiet -show_entries format=duration,size -of default=noprint_wrappers=1 output/tutorial_final.mp4
-
-# 再生確認
-open output/tutorial_final.mp4  # macOS
+```python
+segments, info = model.transcribe(
+    "audio/tutorial.wav",
+    language="ja",
+    initial_prompt="a-blog cms、エントリー、モジュール、テーマ、カスタムフィールド、ブロック、インクルード"
+)
 ```
 
 ## トラブルシューティング
@@ -167,14 +168,4 @@ open output/tutorial_final.mp4  # macOS
 | ノイズ除去後に声がこもる | prop_decrease が高すぎる | `--method ffmpeg` に切り替えるか noisereduce の prop_decrease を 0.6 に下げる |
 | カット後に音が飛ぶ | `-c copy` のキーフレーム問題 | カット時に `-c copy` を外す |
 | 字幕がずれている | カット後の秒数が合っていない | カット済みファイルに対して改めて Whisper を実行 |
-| a-blog CMS 用語の誤認識 | 固有名詞 | SRT を手動修正、または Whisper に `initial_prompt` を渡す |
-
-## Whisper に a-blog CMS 用語を事前に教える
-
-```python
-segments, info = model.transcribe(
-    "audio/tutorial.wav",
-    language="ja",
-    initial_prompt="a-blog CMS、エントリー、モジュール、テーマ、カスタムフィールド、ブロック、インクルード"
-)
-```
+| a-blog cms 用語の誤認識 | 固有名詞 | SRT を手動修正、または Whisper に `initial_prompt` を渡す |

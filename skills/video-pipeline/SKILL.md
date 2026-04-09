@@ -53,7 +53,7 @@ for s in d['streams']:
 | SNS・YouTube 向けの短編動画 | Variant A（下記） |
 | 字幕・アニメーションが必要な本格編集 | Variant B（下記） |
 
-## Variant A: シンプル編集パイプライン（Remotion なし）
+## Variant A: シンプル編集パイプライン
 
 ```
 入力動画
@@ -64,22 +64,37 @@ for s in d['streams']:
   ├─ Step 2: [ffmpeg-edit] 無音検出 → カット・結合（必要に応じて手動カットも）
   │    output: cut.mp4
   │
+  ├─ Step 3: [ffmpeg-edit] 書き出し + プラットフォーム向けエンコード
+  │    output: final.mp4
+  │    詳細: references/platform_presets.md
+  │
+  └─ （オプション）[whisper-caption] 字幕が必要な場合
+       output: captions.srt
+```
+
+## Variant B: 字幕付き編集パイプライン
+
+```
+入力動画
+  │
+  ├─ Step 1: [noise-clean] ノイズ除去
+  │    output: cleaned.mp4
+  │
+  ├─ Step 2: [ffmpeg-edit] 無音検出 → カット・結合
+  │    output: cut.mp4
+  │
   ├─ Step 3: [whisper-caption] 文字起こし → SRT 生成
   │    output: captions.srt
   │
   ├─ Step 4: 字幕の確認・修正（固有名詞の誤認識など）
-  │    output: captions.srt（修正済み）
   │
-  ├─ Step 5: [ffmpeg-edit] 字幕焼き込み + 書き出し
-  │    output: final.mp4
-  │
-  └─ Step 6: 完成確認 + プラットフォーム向けエンコード
-       詳細: references/platform_presets.md
+  └─ Step 5: [ffmpeg-edit] 字幕焼き込み + 書き出し
+       output: final.mp4
 ```
 
-## Variant B: Remotion アニメーション字幕付き
+## Variant C: Remotion アニメーション字幕付き
 
-Variant A の Step 4〜5 を差し替える：
+Variant B の Step 4〜5 を差し替える：
 
 ```
   ├─ Step 4b: SRT を JSON に変換（word-level タイムスタンプ付き）
